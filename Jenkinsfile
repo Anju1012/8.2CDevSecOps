@@ -10,13 +10,13 @@ pipeline {
 
     stage('Run Tests') {
       steps {
-        sh 'npm test || true'  // Allow test failures without stopping the build
+        sh 'npm test || true'
       }
     }
 
     stage('NPM Audit') {
       steps {
-        sh 'npm audit || true'  // Allow audit warnings to pass through
+        sh 'npm audit || true'
       }
     }
   }
@@ -35,16 +35,14 @@ Hi Team,
 ✅ Status: SUCCESS  
 🔗 Logs: ${env.BUILD_URL}
 
-Best regards,  
+Cheers,  
 Jenkins Bot 🤖
 """,
         mimeType: 'text/plain',
         to: 'sannithianjali1012@gmail.com',
         replyTo: 'sannithianjali1012@gmail.com',
         from: 'sannithianjali1012@gmail.com',
-        smtpHost: 'smtp.gmail.com',
-        smtpPort: '587',
-        useTls: true
+        attachLog: true
       )
     }
 
@@ -54,14 +52,11 @@ Jenkins Bot 🤖
         body: """
 Hi Team,
 
-⚠️ The build finished with warnings (likely due to tests or audit issues).
+⚠️ The build finished but is marked **UNSTABLE** (possibly due to tests or audit warnings).
 
 🔧 Job: ${env.JOB_NAME}  
 🔁 Build #: ${env.BUILD_NUMBER}  
-🟡 Status: UNSTABLE  
 🔗 Logs: ${env.BUILD_URL}
-
-Please review as needed.
 
 Regards,  
 Jenkins Bot
@@ -70,9 +65,7 @@ Jenkins Bot
         to: 'sannithianjali1012@gmail.com',
         replyTo: 'sannithianjali1012@gmail.com',
         from: 'sannithianjali1012@gmail.com',
-        smtpHost: 'smtp.gmail.com',
-        smtpPort: '587',
-        useTls: true
+        attachLog: true
       )
     }
 
@@ -88,7 +81,7 @@ Hi Team,
 🔁 Build #: ${env.BUILD_NUMBER}  
 🔗 Logs: ${env.BUILD_URL}
 
-Please check and fix the issue.
+Please check and fix.
 
 Thanks,  
 Jenkins Bot
@@ -97,9 +90,7 @@ Jenkins Bot
         to: 'sannithianjali1012@gmail.com',
         replyTo: 'sannithianjali1012@gmail.com',
         from: 'sannithianjali1012@gmail.com',
-        smtpHost: 'smtp.gmail.com',
-        smtpPort: '587',
-        useTls: true
+        attachLog: true
       )
     }
   }
