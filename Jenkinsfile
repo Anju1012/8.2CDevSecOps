@@ -10,13 +10,13 @@ pipeline {
 
     stage('Run Tests') {
       steps {
-        sh 'npm test || true' // Avoids pipeline breaking on test failures
+        sh 'npm test || true'  // Allow test failures without stopping the build
       }
     }
 
     stage('NPM Audit') {
       steps {
-        sh 'npm audit || true' // Keeps build going despite CVEs
+        sh 'npm audit || true'  // Allow audit warnings to pass through
       }
     }
   }
@@ -28,18 +28,23 @@ pipeline {
         body: """
 Hi Team,
 
-🎉 Build completed successfully!
+🎉 The build completed successfully!
 
-🔧 Job Name: ${env.JOB_NAME}  
-🔁 Build Number: ${env.BUILD_NUMBER}  
+🔧 Job: ${env.JOB_NAME}  
+🔁 Build #: ${env.BUILD_NUMBER}  
 ✅ Status: SUCCESS  
-🔗 View Logs: ${env.BUILD_URL}
+🔗 Logs: ${env.BUILD_URL}
 
-Cheers,  
+Best regards,  
 Jenkins Bot 🤖
 """,
+        mimeType: 'text/plain',
         to: 'sannithianjali1012@gmail.com',
-        attachLog: true
+        replyTo: 'sannithianjali1012@gmail.com',
+        from: 'sannithianjali1012@gmail.com',
+        smtpHost: 'smtp.gmail.com',
+        smtpPort: '587',
+        useTls: true
       )
     }
 
@@ -49,19 +54,25 @@ Jenkins Bot 🤖
         body: """
 Hi Team,
 
-⚠️ The build completed but was marked **UNSTABLE** — likely due to test failures or warnings.
+⚠️ The build finished with warnings (likely due to tests or audit issues).
 
 🔧 Job: ${env.JOB_NAME}  
 🔁 Build #: ${env.BUILD_NUMBER}  
-🔗 View details: ${env.BUILD_URL}
+🟡 Status: UNSTABLE  
+🔗 Logs: ${env.BUILD_URL}
 
-Please review and take action if needed.
+Please review as needed.
 
 Regards,  
-Jenkins Bot 🛠️
+Jenkins Bot
 """,
+        mimeType: 'text/plain',
         to: 'sannithianjali1012@gmail.com',
-        attachLog: true
+        replyTo: 'sannithianjali1012@gmail.com',
+        from: 'sannithianjali1012@gmail.com',
+        smtpHost: 'smtp.gmail.com',
+        smtpPort: '587',
+        useTls: true
       )
     }
 
@@ -71,20 +82,24 @@ Jenkins Bot 🛠️
         body: """
 Hi Team,
 
-🚨 The build has **FAILED**.
+❌ The build has failed.
 
 🔧 Job: ${env.JOB_NAME}  
 🔁 Build #: ${env.BUILD_NUMBER}  
-❌ Status: FAILURE  
-🔗 Investigate here: ${env.BUILD_URL}
+🔗 Logs: ${env.BUILD_URL}
 
-Please resolve the issue promptly.
+Please check and fix the issue.
 
 Thanks,  
-Jenkins Bot ⚙️
+Jenkins Bot
 """,
+        mimeType: 'text/plain',
         to: 'sannithianjali1012@gmail.com',
-        attachLog: true
+        replyTo: 'sannithianjali1012@gmail.com',
+        from: 'sannithianjali1012@gmail.com',
+        smtpHost: 'smtp.gmail.com',
+        smtpPort: '587',
+        useTls: true
       )
     }
   }
