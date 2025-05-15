@@ -52,13 +52,15 @@ Jenkins Bot 🤖
         body: """
 Hi Team,
 
-⚠️ The build finished but is marked **UNSTABLE** (possibly due to tests or audit warnings).
+⚠️ The build finished with warnings or failed tests.
 
 🔧 Job: ${env.JOB_NAME}  
 🔁 Build #: ${env.BUILD_NUMBER}  
+🟡 Status: UNSTABLE  
 🔗 Logs: ${env.BUILD_URL}
 
-Regards,  
+Please review.
+
 Jenkins Bot
 """,
         mimeType: 'text/plain',
@@ -81,9 +83,8 @@ Hi Team,
 🔁 Build #: ${env.BUILD_NUMBER}  
 🔗 Logs: ${env.BUILD_URL}
 
-Please check and fix.
+Please fix the issue ASAP.
 
-Thanks,  
 Jenkins Bot
 """,
         mimeType: 'text/plain',
