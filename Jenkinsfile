@@ -10,13 +10,13 @@ pipeline {
 
     stage('Run Tests') {
       steps {
-        sh 'npm test || true'
+        sh 'npm test || true' // Avoids pipeline breaking on test failures
       }
     }
 
     stage('NPM Audit') {
       steps {
-        sh 'npm audit || true'
+        sh 'npm audit || true' // Keeps build going despite CVEs
       }
     }
   }
@@ -28,15 +28,37 @@ pipeline {
         body: """
 Hi Team,
 
-🎉 Build completed successfully.
+🎉 Build completed successfully!
 
-🔧 Job: ${env.JOB_NAME}  
-🔁 Build #: ${env.BUILD_NUMBER}  
+🔧 Job Name: ${env.JOB_NAME}  
+🔁 Build Number: ${env.BUILD_NUMBER}  
 ✅ Status: SUCCESS  
-🔗 Logs: ${env.BUILD_URL}
+🔗 View Logs: ${env.BUILD_URL}
 
 Cheers,  
 Jenkins Bot 🤖
+""",
+        to: 'sannithianjali1012@gmail.com',
+        attachLog: true
+      )
+    }
+
+    unstable {
+      emailext(
+        subject: "⚠️ Build UNSTABLE: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+        body: """
+Hi Team,
+
+⚠️ The build completed but was marked **UNSTABLE** — likely due to test failures or warnings.
+
+🔧 Job: ${env.JOB_NAME}  
+🔁 Build #: ${env.BUILD_NUMBER}  
+🔗 View details: ${env.BUILD_URL}
+
+Please review and take action if needed.
+
+Regards,  
+Jenkins Bot 🛠️
 """,
         to: 'sannithianjali1012@gmail.com',
         attachLog: true
@@ -49,16 +71,16 @@ Jenkins Bot 🤖
         body: """
 Hi Team,
 
-⚠️ Build has failed.
+🚨 The build has **FAILED**.
 
 🔧 Job: ${env.JOB_NAME}  
 🔁 Build #: ${env.BUILD_NUMBER}  
 ❌ Status: FAILURE  
-🔗 Logs: ${env.BUILD_URL}
+🔗 Investigate here: ${env.BUILD_URL}
 
-Please check and fix.
+Please resolve the issue promptly.
 
-Regards,  
+Thanks,  
 Jenkins Bot ⚙️
 """,
         to: 'sannithianjali1012@gmail.com',
