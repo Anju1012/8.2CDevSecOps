@@ -10,13 +10,13 @@ pipeline {
 
     stage('Run Tests') {
       steps {
-        sh 'npm test || true'  // Allow tests to fail without stopping pipeline
+        sh 'npm test || true'
       }
     }
 
-    stage('NPM Audit (Security Scan)') {
+    stage('NPM Audit') {
       steps {
-        sh 'npm audit || true'  // Allow audit to fail without stopping pipeline
+        sh 'npm audit || true'
       }
     }
   }
@@ -25,22 +25,19 @@ pipeline {
     always {
       emailext(
         subject: "Build: ${env.JOB_NAME} - #${env.BUILD_NUMBER} - ${currentBuild.currentResult}",
-        body: """
-Hi Team,
+        body: """Hi Team,
 
-The build has completed with status: *${currentBuild.currentResult}*
+The build has completed.
 
 🔧 Job: ${env.JOB_NAME}  
 🔁 Build #: ${env.BUILD_NUMBER}  
-📦 Status: ${currentBuild.currentResult}  
-🔗 Logs: ${env.BUILD_URL}
-
-Please check Jenkins for full details.
+📊 Status: ${currentBuild.currentResult}  
+🔗 Details: ${env.BUILD_URL}
 
 Regards,  
 Jenkins Bot 🤖
 """,
-        to: 'sannithianjali1012@gmail.com',
+        to: 'd0fd824e61-acd2b8@inbox.mailtrap.io',  // Replace with your Mailtrap inbox
         attachLog: true
       )
     }
