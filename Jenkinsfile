@@ -10,87 +10,37 @@ pipeline {
 
     stage('Run Tests') {
       steps {
-        sh 'npm test || true'
+        sh 'npm test || true'  // Allow tests to fail without stopping pipeline
       }
     }
 
-    stage('NPM Audit') {
+    stage('NPM Audit (Security Scan)') {
       steps {
-        sh 'npm audit || true'
+        sh 'npm audit || true'  // Allow audit to fail without stopping pipeline
       }
     }
   }
 
   post {
-    success {
+    always {
       emailext(
-        subject: "✅ Build SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+        subject: "Build: ${env.JOB_NAME} - #${env.BUILD_NUMBER} - ${currentBuild.currentResult}",
         body: """
 Hi Team,
 
-🎉 The build completed successfully!
+The build has completed with status: *${currentBuild.currentResult}*
 
 🔧 Job: ${env.JOB_NAME}  
 🔁 Build #: ${env.BUILD_NUMBER}  
-✅ Status: SUCCESS  
+📦 Status: ${currentBuild.currentResult}  
 🔗 Logs: ${env.BUILD_URL}
 
-Cheers,  
+Please check Jenkins for full details.
+
+Regards,  
 Jenkins Bot 🤖
 """,
-        mimeType: 'text/plain',
         to: 'sannithianjali1012@gmail.com',
-        replyTo: 'sannithianjali1012@gmail.com',
-        from: 'sannithianjali1012@gmail.com',
-        attachLog: true
-      )
-    }
-
-    unstable {
-      emailext(
-        subject: "⚠️ Build UNSTABLE: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-        body: """
-Hi Team,
-
-⚠️ The build finished with warnings or failed tests.
-
-🔧 Job: ${env.JOB_NAME}  
-🔁 Build #: ${env.BUILD_NUMBER}  
-🟡 Status: UNSTABLE  
-🔗 Logs: ${env.BUILD_URL}
-
-Please review.
-
-Jenkins Bot
-""",
-        mimeType: 'text/plain',
-        to: 'sannithianjali1012@gmail.com',
-        replyTo: 'sannithianjali1012@gmail.com',
-        from: 'sannithianjali1012@gmail.com',
-        attachLog: true
-      )
-    }
-
-    failure {
-      emailext(
-        subject: "❌ Build FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-        body: """
-Hi Team,
-
-❌ The build has failed.
-
-🔧 Job: ${env.JOB_NAME}  
-🔁 Build #: ${env.BUILD_NUMBER}  
-🔗 Logs: ${env.BUILD_URL}
-
-Please fix the issue ASAP.
-
-Jenkins Bot
-""",
-        mimeType: 'text/plain',
-        to: 'sannithianjali1012@gmail.com',
-        replyTo: 'sannithianjali1012@gmail.com',
-        from: 'sannithianjali1012@gmail.com',
         attachLog: true
       )
     }
