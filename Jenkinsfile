@@ -24,20 +24,19 @@ pipeline {
   post {
     always {
       emailext(
-        subject: "Build: ${env.JOB_NAME} - #${env.BUILD_NUMBER} - ${currentBuild.currentResult}",
-        body: """Hi Team,
-
-The build has completed.
+        subject: "📦 Build Result: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+        body: """
+Hi Team,
 
 🔧 Job: ${env.JOB_NAME}  
 🔁 Build #: ${env.BUILD_NUMBER}  
 📊 Status: ${currentBuild.currentResult}  
-🔗 Details: ${env.BUILD_URL}
+🔗 Logs: ${env.BUILD_URL}
 
-Regards,  
+Best,  
 Jenkins Bot 🤖
 """,
-        to: 'd0fd824e61-acd2b8@inbox.mailtrap.io',  // Replace with your Mailtrap inbox
+        to: 'd0fd824e61-acd2b8@inbox.mailtrap.io', // OR your Gmail if configured globally
         attachLog: true
       )
     }
