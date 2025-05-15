@@ -10,14 +10,13 @@ pipeline {
 
     stage('Run Tests') {
       steps {
-        // Run tests without failing the whole build if snyk is not authenticated
-        sh 'npm test || true'
+        sh 'npm test || true'  // prevents pipeline from failing and allows 'post' to run
       }
     }
 
-    stage('NPM Audit') {
+    stage('Security Audit') {
       steps {
-        sh 'npm audit || true'
+        sh 'npm audit || true'  // allows reporting even if audit fails
       }
     }
   }
@@ -27,21 +26,16 @@ pipeline {
       emailext(
         subject: "Build: ${env.JOB_NAME} - #${env.BUILD_NUMBER} - ${currentBuild.currentResult}",
         body: """
-Hi Team,
+Hello Team,
 
-Jenkins job has completed.
+The Jenkins job **${env.JOB_NAME}** build #${env.BUILD_NUMBER} has finished with status: *${currentBuild.currentResult}*
 
-Job: ${env.JOB_NAME}  
-Build #: ${env.BUILD_NUMBER}  
-Result: ${currentBuild.currentResult}  
-URL: ${env.BUILD_URL}
-
-Please review the logs if necessary.
+🔗 [View Build Log](${env.BUILD_URL})
 
 Regards,  
 Jenkins Bot 🤖
-""",
-        to: 'd0fd824e61-acd2b8@inbox.mailtrap.io',  // or your real email if using Gmail
+        """,
+        to: 'd0fd824e61-acd2b8@inbox.mailtrap.io',
         attachLog: true
       )
     }
